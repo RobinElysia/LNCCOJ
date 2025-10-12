@@ -1,5 +1,7 @@
 # Go-judge → LNCCOJ
 
+Other Language: [CN](https://github.com/RobinElysia/LNCCOJ/blob/main/README_CN)
+
 ## Description
 
 ​	This image is derived from [Go-Judge](https://github.com/criyle/go-judge) and includes 6 commonly used programming languages (listed below) to facilitate developers to use it directly without excessive language environment configuration.
