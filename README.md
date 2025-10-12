@@ -1,101 +1,101 @@
 # Go-judge → LNCCOJ
 
-## 描述
+## Description
 
-​	本镜像由[Go-Judge](https://github.com/criyle/go-judge)衍生而来，加入了常用的 6 种编程语言（如下），目的是为了方便开发者拿来直接使用，不需要配置过多的语言环境。
-
-```bash
-Nodejs：v20.19.2
-Python：3.13.5
-Java：17.0.12
-Go：1.24.8
-gcc：14.2.0
-g++：14.2.0
-```
-
-## 安装教程
-
-​	首先，你要有Docker基础，这里宿主机可以是win11或者Linux（win11下WSL+Docker测试正常）；其次，你需要有魔法，这样才能更加高效的下载；最后，需要你有postman或者其他测试工具
-
-### 镜像装载
-
-下载完该镜像文件后，直接使用加载镜像命令进行加载：
+​	This image is derived from [Go-Judge](https://github.com/criyle/go-judge) and includes 6 commonly used programming languages (listed below) to facilitate developers to use it directly without excessive language environment configuration.
 
 ```bash
-# 加载镜像
-docker load -i 文件名.tar
+Nodejs: v20.19.2
+Python: 3.13.5
+Java: 17.0.12
+Go: 1.24.8
+gcc: 14.2.0
+g++: 14.2.0
 ```
 
-你也可以事后指定镜像名称：
+## Installation Tutorial
+
+​	First, you need to have Docker basics. The host machine here can be win11 or Linux (win11 with WSL+Docker tested normally); second, you need to have a way to access international networks for more efficient downloading; finally, you need postman or other testing tools.
+
+### Image Loading
+
+​	After downloading the image file, directly use the load image command to load it:
 
 ```bash
-# 修改信息
-docker tag <原镜像名>:<原标签> <新镜像名>:<新标签>
+# Load the image
+docker load -i filename.tar
 ```
 
-### 运行容器
+​	You can also specify the image name afterwards:
+
+```bash
+# Modify information
+docker tag <original-image-name>:<original-tag> <new-image-name>:<new-tag>
+```
+
+### Run Container
 
 ```bash
 docker run -d --privileged --shm-size=512m -p 5050:5050 lnccoj
-# 注释
-docker run <参数> <镜像名称>
--d 后台运行，不占用当前端口
---privileged 赋予容器几乎与宿主机 root 用户相同的权限
---shm-size=512m 共享内存大小配置参数
--p 端口映射，宿主机:容器
+# Comments
+docker run <parameters> <image-name>
+-d Run in the background without occupying the current port
+--privileged Grant the container almost the same permissions as the host root user
+--shm-size=512m Shared memory size configuration parameter
+-p Port mapping, host:container
 
-# 或者使用
+# Or use
 docker run -d --name lnccoj --privileged --cpus 2 --cpuset-cpus 0-1 -m 4G -p 5050:5050 -p 5052:5052 lnccoj:v1.1 -http-addr 0.0.0.0:5050 -enable-metrics -monitor-addr 0.0.0.0:5052
 
-# 注释
---cpus 2：限制容器最多使用2个CPU核心。
---cpuset-cpus 0-1：限制容器只能运行在指定的CPU核心上，这里是指定使用0和1号CPU核心。
--m 4G：限制容器的内存使用为4GB。
--p 5050:5050：将主机的5050端口映射到容器的5050端口。
--p 5052:5052：将主机的5052端口映射到容器的5052端口。
--http-addr 0.0.0.0:5050：这是传递给容器内应用程序的参数，表示应用程序的HTTP服务地址为0.0.0.0:5050。
--enable-metrics：启用指标收集（通常是应用程序的功能，用于收集和暴露监控指标）。
--monitor-addr 0.0.0.0:5052：指定监控指标的暴露地址为0.0.0.0:5052。
+# Comments
+--cpus 2: Limit the container to use at most 2 CPU cores.
+--cpuset-cpus 0-1: Restrict the container to run on specified CPU cores, here 0 and 1.
+-m 4G: Limit the container's memory usage to 4GB.
+-p 5050:5050: Map the host's 5050 port to the container's 5050 port.
+-p 5052:5052: Map the host's 5052 port to the container's 5052 port.
+-http-addr 0.0.0.0:5050: This is a parameter passed to the application inside the container, indicating that the application's HTTP service address is 0.0.0.0:5050.
+-enable-metrics: Enable metrics collection (usually a feature of the application for collecting and exposing monitoring metrics).
+-monitor-addr 0.0.0.0:5052: Specify the address for exposing monitoring metrics as 0.0.0.0:5052.
 ```
 
-### 查看容器状态
+### Check Container Status
 
 ```bash
 docker ps -al
-# 如果看到如下就代表成功了
+# If you see the following, it means success
 CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        PORTS                    NAMES
 7b9c6fecbbd0   lnccoj   "/opt/go-judge"   24 hours ago   Up 24 hours   0.0.0.0:5050->5050/tcp   lnccoj
-# 端口映射成功就算成功了
+# The port mapping is successful
 ```
 
-接下来就可以测试了🤓👍
+Now you can test it 🤓👍
 
-## 请求样例（记得删除注释测试）
+## Request Examples (Remember to delete comments when testing)
 
 ### js
 
-编译请求：
+Compilation request:
 
 ```json
 {
     "cmd": [{
-        "args": ["/usr/bin/nodejs", "a.js"], //编译命令
+        "args": ["/usr/bin/nodejs", "a.js"], // Compilation command
         "env": ["PATH=/usr/bin:/bin"],
         "files": [{
             "content": ""
         }, {
-            "name": "stdout", // 标准输入
-            "max": 10240 // 标准输入最大
+            "name": "stdout", // Standard input
+            "max": 10240 // Maximum size of standard input
         }, {
-            "name": "stderr", // 标准输出
-            "max": 10240 // 标准输出最大
+            "name": "stderr", // Standard output
+            "max": 10240 // Maximum size of standard output
         }],
-        "cpuLimit": 10000000000, // cpu限制
-        "memoryLimit": 104857600, // 内存限制
+        "cpuLimit": 10000000000, // CPU limit
+        "memoryLimit": 104857600, // Memory limit
         "procLimit": 50,
         "copyIn": {
-            "a.js": { // 注意修改
-                "content": "#!/usr/bin/env node\nconsole.log(\"🎉 Hello, World!\");" // 代码部分，记得转译
+            "a.js": { // Note to modify
+                "content": "#!/usr/bin/env node\nconsole.log(\"🎉 Hello, World!\");" // Code part, remember to escape
             }
         },
         "copyOut": ["stdout", "stderr"],
@@ -104,7 +104,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 }
 ```
 
-运行请求：
+Running request:
 
 ```json
 {
@@ -112,7 +112,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
         "args": ["a.js"],
         "env": ["PATH=/usr/bin:/bin"],
         "files": [{
-            "content": "" // 运行传参
+            "content": "" // Parameters passed during running
         }, {
             "name": "stdout",
             "max": 10240
@@ -120,12 +120,12 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
             "name": "stderr",
             "max": 10240
         }],
-        "cpuLimit": 10000000000, // cpu限制
-        "memoryLimit": 104857600, // 内存限制
+        "cpuLimit": 10000000000, // CPU limit
+        "memoryLimit": 104857600, // Memory limit
         "procLimit": 50,
         "copyIn": {
             "a.js": {
-                "fileId": "Z66NSY2T" // 编译的响应会给出ID，记得换
+                "fileId": "Z66NSY2T" // The compilation response will give the ID, remember to replace
             }
         }
     }]
@@ -134,7 +134,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 
 ### py
 
-编译请求（虽然没有编译部分，需要走编译部分，不然你拿不到ID）：
+Compilation request (Although there is no actual compilation, you need to go through the compilation step to get the ID):
 
 ```json
 {
@@ -164,7 +164,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 }
 ```
 
-编译请求：
+Running request:
 
 ```json
 {
@@ -194,7 +194,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 
 ### java
 
-编译请求：
+Compilation request:
 
 ```json
 {
@@ -214,17 +214,17 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
         "memoryLimit": 104857600,
         "procLimit": 50,
         "copyIn": {
-            "Main.java": { // 注意这里是java文件
+            "Main.java": { // Note this is the java file
                 "content": "public class Main{ \n public static void main(String[] args) { \n System.out.println(\"Hello world\");\n }\n}"
             }
         },
         "copyOut": ["stdout", "stderr"],
-        "copyOutCached": ["Main.class"] // 这里是字节码文件
+        "copyOutCached": ["Main.class"] // This is the bytecode file
     }]
 }
 ```
 
-运行请求：
+Running request:
 
 ```json
 {
@@ -244,7 +244,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
         "memoryLimit": 104857600,
         "procLimit": 50,
         "copyIn": {
-            "Main.class": { // 这里是字节码文件
+            "Main.class": { // This is the bytecode file
                 "fileId": "2O5QX3EB"
             }
         }
@@ -254,7 +254,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 
 ### go
 
-编译请求：
+Compilation request:
 
 ```json
 {
@@ -268,7 +268,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
             "GO111MODULE=off",
             "GOOS=linux",
             "GOARCH=amd64"
-        ], // 这里和一般的语言不太一样，别问，问就是环境配置多
+        ], // This is different from general languages. Don't ask, it's just more environment configurations
         "files": [{
             "content": ""
         }, {
@@ -279,7 +279,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
             "max": 10240
         }],
         "cpuLimit": 10000000000,
-        "memoryLimit": 2516582400, // 注意内存大于100MB
+        "memoryLimit": 2516582400, // Note that memory is larger than 100MB
         "procLimit": 50,
         "copyIn": {
             "main.go": {
@@ -292,7 +292,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 }
 ```
 
-运行请求：
+Running request:
 
 ```json
 {
@@ -317,7 +317,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
             "max": 10240
         }],
         "cpuLimit": 10000000000,
-        "memoryLimit": 2516582400, // 注意内存大于100MB
+        "memoryLimit": 2516582400, // Note that memory is larger than 100MB
         "procLimit": 50,
         "copyIn": {
             "main.go": {
@@ -330,7 +330,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 
 ### C++
 
-编译请求：
+Compilation request:
 
 ```json
 {
@@ -360,7 +360,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 }
 ```
 
-运行请求：
+Running request:
 
 ```json
 {
@@ -381,7 +381,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
         "procLimit": 50,
         "copyIn": {
             "a": {
-                "fileId": "5LWIZAA45JHX4Y4Z" // 这个缓存文件的 ID 来自上一个请求返回的 fileIds
+                "fileId": "5LWIZAA45JHX4Y4Z" // The ID of this cached file comes from the fileIds returned by the previous request
             }
         }
     }]
@@ -390,7 +390,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 
 ### C
 
-编译请求：
+Compilation request:
 
 ```json
 {
@@ -420,7 +420,7 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 }
 ```
 
-运行请求：
+Running request:
 
 ```json
 {
@@ -448,42 +448,42 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 }
 ```
 
-其他`API`参考：[Go-Judge.API](https://docs.goj.ac/cn/api)
+Other `API` references: [Go-Judge.API](https://docs.goj.ac/cn/api)
 
-## 环境
+## Environment
 
 ### C/C++
 
-​	在`/usr/bin`下，你可以看到`gcc`和`g++`，你可以动手卸载这个版本、安装其他版本。
+​	In `/usr/bin`, you can see `gcc` and `g++`. You can manually uninstall this version and install other versions.
 
 ### Go
 
-​	在`/usr/bin/go`下，这里为了统一环境安装位置，全部管理在`/usr/bin/go`下。除了这些，go语言的缓存资源在`/tmp/`下，有`go`、`go-cache`和`go-tmp`，这里不建议修改，因为是精心设计的（
+​	In `/usr/bin/go`. For the convenience of unified environment installation location, everything is managed under `/usr/bin/go`. In addition, the cache resources for the Go language are under `/tmp/`, including `go`, `go-cache`, and `go-tmp`. It is not recommended to modify these as they are carefully designed.
 
 ### Nodejs
 
-​	在`/usr/bin`下。你可以安装其他版本的Nodejs，或者使用`apt`安装`nvm`进行版本管理，这里不做详细的解释了，详情见`nvm`的官网文档。
+​	In `/usr/bin`. You can install other versions of Nodejs or use `apt` to install `nvm` for version management. Detailed explanations are not provided here; please refer to the official `nvm` documentation.
 
 ### Java
 
-​	在`/usr/bin/jdk-17.0.12`下。同样，你可以安装`JEnv`进行`Java`版本管理，这里不再进行详解，进请参考[`JEnv`的项目地址](https://github.com/jenv/jenv)。
+​	In `/usr/bin/jdk-17.0.12`. Similarly, you can install `JEnv` for `Java` version management. Detailed explanations are not provided here; please refer to the [`JEnv` project address](https://github.com/jenv/jenv).
 
 ### Python
 
-​	在`/usr/bin`下，注意`py`在 Linux 下为`python3`，不是`Python`，算是一个坑，并且`Py`原生不支持命令行传参，需要自行在代码中添加相关依赖。如：“sys”，具体代码如下：
+​	In `/usr/bin`. Note that `py` in Linux is `python3`, not `Python`—this is a potential pitfall. Also, Python does not natively support command-line parameters; you need to add relevant dependencies in the code yourself, such as "sys". The specific code is as follows:
 
 ```py
 import sys
 
-# sys.argv[0] 是脚本名称
-# sys.argv[1] 是第一个参数，依此类推
+# sys.argv[0] is the script name
+# sys.argv[1] is the first parameter, and so on
 
 if len(sys.argv) > 1:
-    print(f"脚本名称: {sys.argv[0]}")
-    print(f"第一个参数: {sys.argv[1]}")
-    print(f"所有参数: {sys.argv[1:]}")
+    print(f"Script name: {sys.argv[0]}")
+    print(f"First parameter: {sys.argv[1]}")
+    print(f"All parameters: {sys.argv[1:]}")
 else:
-    print("请提供命令行参数")
+    print("Please provide command-line parameters")
 ```
 
-其他系统级别设置参考：[Go-Judge.configuration](https://docs.goj.ac/cn/configuration)
+Other system-level settings reference: [Go-Judge.configuration](https://docs.goj.ac/cn/configuration)
