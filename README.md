@@ -1,6 +1,6 @@
 # Go-judge → LNCCOJ
 
-Other Language: [CN](https://github.com/RobinElysia/LNCCOJ/blob/main/README_CN)
+Other Language: [CN](https://github.com/RobinElysia/LNCCOJ/blob/main/README_CN.md)
 
 ## Description
 
