@@ -13,13 +13,19 @@ gcc：14.2.0
 g++：14.2.0
 ```
 
+## 版本说明
+
+    `vX.1`为单体部署，`vX.2`为集群部署。
+
 ## 安装教程
 
 ​	首先，你要有Docker基础，这里宿主机可以是win11或者Linux（win11下WSL+Docker测试正常）；其次，你需要有魔法，这样才能更加高效的下载；最后，需要你有postman或者其他测试工具
 
-### 镜像装载
+### 单体部署
 
-下载完该镜像文件后，直接使用加载镜像命令进行加载：
+#### 镜像装载
+
+下载`vX.1`版本，完成后直接使用加载镜像命令进行加载：
 
 ```bash
 # 加载镜像
@@ -33,7 +39,7 @@ docker load -i 文件名.tar
 docker tag <原镜像名>:<原标签> <新镜像名>:<新标签>
 ```
 
-### 运行容器
+#### 运行容器
 
 ```bash
 docker run -d --privileged --shm-size=512m -p 5050:5050 lnccoj
@@ -58,7 +64,7 @@ docker run -d --name lnccoj --privileged --cpus 2 --cpuset-cpus 0-1 -m 4G -p 505
 -monitor-addr 0.0.0.0:5052：指定监控指标的暴露地址为0.0.0.0:5052。
 ```
 
-### 查看容器状态
+#### 查看容器状态
 
 ```bash
 docker ps -al
@@ -67,6 +73,66 @@ CONTAINER ID   IMAGE             COMMAND           CREATED        STATUS        
 7b9c6fecbbd0   lnccoj   "/opt/go-judge"   24 hours ago   Up 24 hours   0.0.0.0:5050->5050/tcp   lnccoj
 # 端口映射成功就算成功了
 ```
+
+### 集群部署
+
+下载`vX.2`版本，之后同样的加载容器：
+
+```bash
+# 加载镜像
+docker load -i 文件名.tar
+```
+
+你也可以事后指定镜像名称：
+
+```bash
+# 修改信息
+docker tag <原镜像名>:<原标签> <新镜像名>:<新标签>
+```
+
+装上镜像之后，编写 Docker Compose 一键部署。请参考如下 yaml 文件（仅限参考，这个试运行不了的）：
+
+```yaml
+services:
+  python:
+    image: python:3.9  # 可以根据需要替换为实际的容器镜像
+    container_name: Python # 容器命名
+    privileged: true # 开启特权
+    shm_size: 512m # 共享内存大小配置参数
+    ports: # 端口映射可自定义，但是不可重复
+      - "5050:5050"
+      - "5052:5052"
+    networks:
+      - app-network
+
+  java:
+    image: openjdk:11  # 可以根据需要替换为实际的容器镜像
+    container_name: Java
+    privileged: true
+    shm_size: 512m
+    ports:
+      - "5051:5050"
+      - "5053:5052"
+    networks:
+      - app-network
+
+  go:
+    image: golang:1.17  # 可以根据需要替换为实际的容器镜像
+    container_name: Go
+    privileged: true
+    shm_size: 512m
+    ports:
+      - "5054:5050"
+      - "5055:5052"
+    networks:
+      - app-network
+   ... # 可以根据需要增加更多容器。
+networks:
+  app-network:
+    driver: bridge
+```
+
+完成之后，集群部署就成功了
 
 接下来就可以测试了🤓👍
 
