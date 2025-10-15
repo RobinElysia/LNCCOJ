@@ -132,7 +132,7 @@ networks:
     driver: bridge
 ```
 
-完成之后，集群部署就成功了
+完成之后，运行 Docker Compose 文件就可以集群部署了
 
 接下来就可以测试了🤓👍
 
